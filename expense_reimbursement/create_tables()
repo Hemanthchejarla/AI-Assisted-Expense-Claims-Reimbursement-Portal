@@ -1,0 +1,19 @@
+cursor.execute("""
+    CREATE TRIGGER IF NOT EXISTS prevent_paid_claim_changes
+
+    BEFORE UPDATE ON claims
+
+    WHEN OLD.final_status = 'PAID'
+         AND NEW.final_status != 'PAID'
+
+    BEGIN
+
+        SELECT RAISE(
+            ABORT,
+            'Paid claims cannot be changed.'
+        );
+
+    END;
+""")
+
+
